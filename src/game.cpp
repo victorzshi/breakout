@@ -25,10 +25,6 @@ Game::Game()
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
 		throw;
 	}
-	else
-	{
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	}
 	
 	font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 8);
 	if (font == NULL)
@@ -45,6 +41,8 @@ void Game::start()
 	#endif
 
 	is_running = true;
+
+	walls.set_dimensions(50, 50, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
 
 	int previous = SDL_GetTicks64();
 	int lag = 0;
@@ -74,6 +72,8 @@ void Game::free()
 		frames_per_second_texture.free();
 		updates_per_second_texture.free();
 	#endif
+
+	walls.free();
 
 	TTF_CloseFont(font);
 	font = NULL;
@@ -110,10 +110,10 @@ void Game::update()
 		update_text.str("");
 		update_text << "Average Updates Per Second " << average_updates_per_second;
 
-		SDL_Color color = { 0, 255, 0 };
+		SDL_Color green = { 0, 255, 0 };
 
-		frames_per_second_texture.load_text(renderer, font, frame_text.str().c_str(), color);
-		updates_per_second_texture.load_text(renderer, font, update_text.str().c_str(), color);
+		frames_per_second_texture.load_text(renderer, font, frame_text.str().c_str(), green);
+		updates_per_second_texture.load_text(renderer, font, update_text.str().c_str(), green);
 
 		++update_total;
 	#endif
@@ -130,6 +130,9 @@ void Game::render(int elapsed)
 
 		++frame_total;
 	#endif
+
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	walls.render(renderer);
 
 	SDL_RenderPresent(renderer);
 }
