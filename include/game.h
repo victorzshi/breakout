@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 
 #include "texture.h"
+#include "walls.h"
 
 class Game
 {
@@ -38,6 +39,8 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	TTF_Font* font;
+
+	Walls walls;
 
 	void process_input();
 
