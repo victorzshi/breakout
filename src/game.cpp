@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "game.h"
-#include "timer.h"
 
 Game::Game()
 {
@@ -12,7 +11,7 @@ Game::Game()
 		throw;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (renderer == NULL)
 	{
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
@@ -31,23 +30,33 @@ Game::Game()
 	}
 
 	is_running = true;
-
-	frame_timer = Timer();
-
+	start_time = 0;
 	frame_total = 0;
 }
 
 void Game::start()
 {
-	frame_timer.start();
+	start_time = SDL_GetTicks64();
+
+	int previous = SDL_GetTicks64();
+	int lag = 0;
 
 	while (is_running)
 	{
+		int current = SDL_GetTicks64();
+		int elapsed = current - previous;
+		previous = current;
+		lag += elapsed;
+
 		process_input();
 
-		update();
+		while (lag >= MS_PER_UPDATE)
+		{
+			update();
+			lag -= MS_PER_UPDATE;
+		}
 
-		render();
+		render(lag / MS_PER_UPDATE);
 
 		++frame_total;
 	}
@@ -81,11 +90,8 @@ void Game::process_input()
 
 void Game::update()
 {
-	float average_fps = frame_total / (frame_timer.get_time() / 1000.f);
-	if (average_fps > 2000000)
-	{
-		average_fps = 0;
-	}
+	double total_time = (SDL_GetTicks64() - start_time) / 1000.0;
+	double average_fps = frame_total / total_time;
 
 	frame_text.str("");
 	frame_text << "Average Frames Per Second " << average_fps;
@@ -95,7 +101,7 @@ void Game::update()
 	texture.load_text(renderer, font, frame_text.str().c_str(), color);
 }
 
-void Game::render()
+void Game::render(int elapsed_time)
 {
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(renderer);
