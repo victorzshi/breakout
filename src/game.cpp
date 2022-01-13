@@ -43,6 +43,7 @@ void Game::start()
 	is_running = true;
 
 	walls.set_dimensions(50, 50, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
+	ball.set_position(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
 	int previous = SDL_GetTicks64();
 	int lag = 0;
@@ -133,6 +134,7 @@ void Game::render(int elapsed)
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	walls.render(renderer);
+	ball.render(renderer);
 
 	SDL_RenderPresent(renderer);
 }
