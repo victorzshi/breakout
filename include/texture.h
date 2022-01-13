@@ -11,6 +11,10 @@ public:
 
 	void load_text(SDL_Renderer* renderer, TTF_Font* font, std::string text, SDL_Color color);
 
+	int get_width();
+
+	int get_height();
+
 	void render(SDL_Renderer* renderer, int x, int y);
 
 	void free();
