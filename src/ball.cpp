@@ -2,18 +2,18 @@
 
 Ball::Ball()
 {
-	x = 0;
-	y = 0;
+    position = Vector2D();
 }
 
-void Ball::set_position(int x, int y)
+void Ball::set_position(Vector2D vector)
 {
-	this->x = x;
-	this->y = y;
+    position = vector;
 }
 
 void Ball::render(SDL_Renderer* renderer)
 {
+    int x = position.x;
+    int y = position.y;
     int offset_x = RADIUS;
     int offset_y = 0;
     int error = 0;

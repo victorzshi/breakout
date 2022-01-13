@@ -2,12 +2,14 @@
 
 #include <SDL.h>
 
+#include "vector_2d.h"
+
 class Ball
 {
 public:
 	Ball();
 
-	void set_position(int x, int y);
+	void set_position(Vector2D vector);
 
 	void render(SDL_Renderer* renderer);
 
@@ -16,5 +18,5 @@ public:
 private:
 	static const int RADIUS = 5;
 
-	int x, y;
+	Vector2D position;
 };

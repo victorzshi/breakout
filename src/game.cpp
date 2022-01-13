@@ -43,7 +43,7 @@ void Game::start()
 	is_running = true;
 
 	walls.set_dimensions(50, 50, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
-	ball.set_position(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	ball.set_position(Vector2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
 
 	int previous = SDL_GetTicks64();
 	int lag = 0;
