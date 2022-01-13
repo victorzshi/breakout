@@ -4,6 +4,14 @@
 
 Game::Game()
 {
+	#ifdef _DEBUG
+		start_time = 0;
+		frame_total = 0;
+		update_total = 0;
+	#endif
+
+	is_running = false;
+
 	window = SDL_CreateWindow("Breakout", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
@@ -22,21 +30,21 @@ Game::Game()
 		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	}
 	
-	font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
+	font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 8);
 	if (font == NULL)
 	{
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		throw;
 	}
-
-	is_running = true;
-	start_time = 0;
-	frame_total = 0;
 }
 
 void Game::start()
 {
-	start_time = SDL_GetTicks64();
+	#ifdef _DEBUG
+		start_time = SDL_GetTicks64();
+	#endif
+
+	is_running = true;
 
 	int previous = SDL_GetTicks64();
 	int lag = 0;
@@ -57,14 +65,15 @@ void Game::start()
 		}
 
 		render(lag / MS_PER_UPDATE);
-
-		++frame_total;
 	}
 }
 
 void Game::free()
 {
-	texture.free();
+	#ifdef _DEBUG
+		frames_per_second_texture.free();
+		updates_per_second_texture.free();
+	#endif
 
 	TTF_CloseFont(font);
 	font = NULL;
@@ -90,23 +99,37 @@ void Game::process_input()
 
 void Game::update()
 {
-	double total_time = (SDL_GetTicks64() - start_time) / 1000.0;
-	double average_fps = frame_total / total_time;
+	#ifdef _DEBUG
+		double total_time = (SDL_GetTicks64() - start_time) / 1000.0;
 
-	frame_text.str("");
-	frame_text << "Average Frames Per Second " << average_fps;
+		double average_frames_per_second = frame_total / total_time;
+		frame_text.str("");
+		frame_text << "Average Frames Per Second " << average_frames_per_second;
 
-	SDL_Color color = { 255, 255, 255 };
+		double average_updates_per_second = update_total / total_time;
+		update_text.str("");
+		update_text << "Average Updates Per Second " << average_updates_per_second;
 
-	texture.load_text(renderer, font, frame_text.str().c_str(), color);
+		SDL_Color color = { 0, 255, 0 };
+
+		frames_per_second_texture.load_text(renderer, font, frame_text.str().c_str(), color);
+		updates_per_second_texture.load_text(renderer, font, update_text.str().c_str(), color);
+
+		++update_total;
+	#endif
 }
 
-void Game::render(int elapsed_time)
+void Game::render(int elapsed)
 {
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(renderer);
 
-	texture.render(renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	#ifdef _DEBUG
+		frames_per_second_texture.render(renderer, 0, 0);
+		updates_per_second_texture.render(renderer, 0, frames_per_second_texture.get_height());
+
+		++frame_total;
+	#endif
 
 	SDL_RenderPresent(renderer);
 }

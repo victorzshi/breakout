@@ -34,6 +34,23 @@ void Texture::load_text(SDL_Renderer* renderer, TTF_Font* font, std::string text
 	SDL_FreeSurface(surface);
 }
 
+int Texture::get_width()
+{
+	return width;
+}
+
+int Texture::get_height()
+{
+	return height;
+}
+
+void Texture::render(SDL_Renderer* renderer, int x, int y)
+{
+	SDL_Rect render_target = { x, y, width, height};
+
+	SDL_RenderCopy(renderer, texture, NULL, &render_target);
+}
+
 void Texture::free()
 {
 	if (texture != NULL)
@@ -43,11 +60,4 @@ void Texture::free()
 		width = 0;
 		height = 0;
 	}
-}
-
-void Texture::render(SDL_Renderer* renderer, int x, int y)
-{
-	SDL_Rect render_target = { x - (width / 2), y - (height / 2), width, height};
-
-	SDL_RenderCopy(renderer, texture, NULL, &render_target);
 }

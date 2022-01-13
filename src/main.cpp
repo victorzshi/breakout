@@ -5,7 +5,7 @@
 
 #include "game.h"
 
-bool init()
+void init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -23,8 +23,6 @@ bool init()
 		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
 		throw;
 	}
-
-	return true;
 }
 
 void quit()
@@ -35,18 +33,15 @@ void quit()
 
 int main(int argc, char* args[])
 {
-	if (init())
-	{
-		Game game = Game();
+	init();
 
-		game.start();
+	Game game = Game();
+
+	game.start();
 	
-		game.free();
-	}
-	else
-	{
-		quit();
-	}
+	game.free();
+	
+	quit();
 	
 	return 0;
 }
