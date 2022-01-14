@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "vector_2d.h"
 
 Vector2D::Vector2D()
@@ -12,8 +14,40 @@ Vector2D::Vector2D(int x, int y)
 	this->y = y;
 }
 
-void Vector2D::add(Vector2D vector)
+Vector2D Vector2D::add(Vector2D v)
 {
-	x += vector.x;
-	y += vector.y;
+	return Vector2D(x + v.x, y + v.y);
+}
+
+Vector2D Vector2D::subtract(Vector2D v)
+{
+	return Vector2D(x - v.x, y - v.y);
+}
+
+Vector2D Vector2D::multiply(double n)
+{
+	return Vector2D(round(x * n), round(y * n));
+}
+
+Vector2D Vector2D::divide(double n)
+{
+	return Vector2D(round(x / n), round(y / n));
+}
+
+double Vector2D::magnitude()
+{
+	return sqrt(x * x + y * y);
+}
+
+Vector2D Vector2D::normalize()
+{
+	double magnitude = this->magnitude();
+	if (magnitude > 0)
+	{
+		return this->divide(magnitude);
+	}
+	else
+	{
+		throw;
+	}
 }

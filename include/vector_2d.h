@@ -9,5 +9,15 @@ public:
 
 	Vector2D(int x, int y);
 
-	void add(Vector2D vector);
+	Vector2D add(Vector2D v);
+
+	Vector2D subtract(Vector2D v);
+
+	Vector2D multiply(double n);
+
+	Vector2D divide(double n);
+
+	double magnitude();
+
+	Vector2D normalize();
 };

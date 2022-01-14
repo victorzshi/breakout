@@ -48,5 +48,5 @@ private:
 
 	void update();
 
-	void render(int elapsed);
+	void render(double elapsed_time);
 };
