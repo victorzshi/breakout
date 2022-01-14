@@ -43,7 +43,8 @@ void Game::start()
 	is_running = true;
 
 	walls.set_dimensions(50, 50, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
-	ball.set_position(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	paddle.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.8);
+	ball.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5);
 
 	double previous = SDL_GetTicks64();
 	double lag = 0.0;
@@ -74,8 +75,9 @@ void Game::free()
 		updates_per_second_texture.free();
 	#endif
 
-	walls.free();
 	ball.free();
+	paddle.free();
+	walls.free();
 
 	TTF_CloseFont(font);
 	font = NULL;
@@ -96,6 +98,8 @@ void Game::process_input()
 		{
 			is_running = false;
 		}
+
+		paddle.process_input(event);
 	}
 }
 
@@ -120,6 +124,7 @@ void Game::update()
 		++update_total;
 	#endif
 
+	paddle.update(walls);
 	ball.update(walls);
 }
 
@@ -137,6 +142,7 @@ void Game::render(double elapsed_time)
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	walls.render(renderer);
+	paddle.render(renderer, elapsed_time);
 	ball.render(renderer, elapsed_time);
 
 	SDL_RenderPresent(renderer);
