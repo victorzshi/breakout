@@ -4,8 +4,9 @@
 Ball::Ball()
 {
     position = Vector2();
-    velocity = Vector2(SPEED, SPEED);
-    acceleration = Vector2(-0.01, 0.01);
+    velocity = Vector2(0.0, 1.0);
+    velocity = Vector2::multiply(velocity, SPEED);
+    acceleration = Vector2(0.0, 0.0);
 
     collider = { position.x, position.y, RADIUS };
 }

@@ -64,4 +64,3 @@ Vector2 Vector2::limit(Vector2 v, double n)
 		return v;
 	}
 }
-
