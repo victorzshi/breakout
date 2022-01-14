@@ -2,7 +2,8 @@
 
 #include <SDL.h>
 
-#include "vector_2d.h"
+#include "circle.h"
+#include "vector_2.h"
 #include "walls.h"
 
 class Ball
@@ -10,19 +11,25 @@ class Ball
 public:
 	Ball();
 
-	void set_position(Vector2D vector);
+	void set_position(double x, double y);
 
-	void move(Walls& walls);
+	Circle& get_collider();
+
+	void update(Walls& walls);
 
 	void render(SDL_Renderer* renderer, double elapsed_time);
 
 	void free();
 
 private:
-	static const int RADIUS = 5;
-	static const int SPEED = 3;
+	const double RADIUS = 5.0;
+	const double SPEED = 1.0;
 
-	Vector2D position;
+	Vector2 position;
+	Vector2 velocity;
+	Vector2 acceleration;
 
-	Vector2D velocity;
+	Circle collider;
+
+	void update_collider();
 };

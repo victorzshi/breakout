@@ -1,48 +1,71 @@
 #include "ball.h"
+#include "physics.h"
 
 Ball::Ball()
 {
-    position = Vector2D();
-    velocity = Vector2D(SPEED, SPEED);
+    position = Vector2();
+    velocity = Vector2(SPEED, SPEED);
+    acceleration = Vector2(-0.01, 0.01);
+
+    collider = { position.x, position.y, RADIUS };
 }
 
-void Ball::set_position(Vector2D vector)
+void Ball::set_position(double x, double y)
 {
-    position = vector;
+    position = Vector2(x, y);
+
+    update_collider();
 }
 
-void Ball::move(Walls& walls)
+Circle& Ball::get_collider()
 {
-    position = position.add(velocity);
+    return collider;
+}
 
-    // This puts the center of the ball in the wall...
-    if (position.x >= 640 || position.x <= 0)
+void Ball::update(Walls& walls)
+{
+    velocity = Vector2::add(velocity, acceleration);
+    velocity = Vector2::limit(velocity, 10.0);
+    position = Vector2::add(position, velocity);
+
+    update_collider();
+
+    if (Physics::is_collision(collider, walls.get_left()) ||
+        Physics::is_collision(collider, walls.get_right()))
     {
+        position = Vector2::subtract(position, velocity);
         velocity.x *= -1;
+
+        update_collider();
     }
 
-    if (position.y > 480 || position.y < 0)
+    if (Physics::is_collision(collider, walls.get_top()) ||
+        Physics::is_collision(collider, walls.get_bottom()))
     {
+        position = Vector2::subtract(position, velocity);
         velocity.y *= -1;
+
+        update_collider();
     }
 }
 
 void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 {
-    Vector2D rendered_position;
+    Vector2 rendered_position;
 
     if (elapsed_time > 0)
     {
-        rendered_position = position.add(velocity.multiply(elapsed_time));
+        Vector2 estimated_velocity = Vector2::multiply(velocity, elapsed_time);
+        rendered_position = Vector2::add(position, estimated_velocity);
     }
     else
     {
         rendered_position = position;
     }
    
-    int x = rendered_position.x;
-    int y = rendered_position.y;
-    int offset_x = RADIUS;
+    int x = (int)round(rendered_position.x);
+    int y = (int)round(rendered_position.y);
+    int offset_x = (int)round(RADIUS);
     int offset_y = 0;
     int error = 0;
 
@@ -73,4 +96,10 @@ void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 void Ball::free()
 {
 	return;
+}
+
+void Ball::update_collider()
+{
+    collider.x = position.x;
+    collider.y = position.y;
 }
