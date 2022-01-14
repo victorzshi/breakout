@@ -7,6 +7,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#include "ball.h"
 #include "texture.h"
 #include "walls.h"
 
@@ -41,10 +42,11 @@ private:
 	TTF_Font* font;
 
 	Walls walls;
+	Ball ball;
 
 	void process_input();
 
 	void update();
 
-	void render(int elapsed);
+	void render(double elapsed_time);
 };

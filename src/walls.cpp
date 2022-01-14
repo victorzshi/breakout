@@ -31,6 +31,26 @@ void Walls::set_dimensions(int x, int y, int w, int h)
 	right.h = h;
 }
 
+SDL_Rect& Walls::get_top()
+{
+	return top;
+}
+
+SDL_Rect& Walls::get_bottom()
+{
+	return bottom;
+}
+
+SDL_Rect& Walls::get_left()
+{
+	return left;
+}
+
+SDL_Rect& Walls::get_right()
+{
+	return right;
+}
+
 void Walls::render(SDL_Renderer* renderer)
 {
 	SDL_RenderFillRect(renderer, &top);

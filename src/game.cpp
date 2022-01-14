@@ -43,14 +43,15 @@ void Game::start()
 	is_running = true;
 
 	walls.set_dimensions(50, 50, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
+	ball.set_position(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
-	int previous = SDL_GetTicks64();
-	int lag = 0;
+	double previous = SDL_GetTicks64();
+	double lag = 0.0;
 
 	while (is_running)
 	{
-		int current = SDL_GetTicks64();
-		int elapsed = current - previous;
+		double current = SDL_GetTicks64();
+		double elapsed = current - previous;
 		previous = current;
 		lag += elapsed;
 
@@ -74,6 +75,7 @@ void Game::free()
 	#endif
 
 	walls.free();
+	ball.free();
 
 	TTF_CloseFont(font);
 	font = NULL;
@@ -117,9 +119,11 @@ void Game::update()
 
 		++update_total;
 	#endif
+
+	ball.update(walls);
 }
 
-void Game::render(int elapsed)
+void Game::render(double elapsed_time)
 {
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(renderer);
@@ -133,6 +137,7 @@ void Game::render(int elapsed)
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	walls.render(renderer);
+	ball.render(renderer, elapsed_time);
 
 	SDL_RenderPresent(renderer);
 }

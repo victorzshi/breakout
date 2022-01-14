@@ -147,14 +147,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ball.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\vector_2.cpp" />
     <ClCompile Include="src\walls.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ball.h" />
+    <ClInclude Include="include\circle.h" />
     <ClInclude Include="include\game.h" />
+    <ClInclude Include="include\physics.h" />
     <ClInclude Include="include\texture.h" />
+    <ClInclude Include="include\vector_2.h" />
     <ClInclude Include="include\walls.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
