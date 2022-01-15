@@ -24,8 +24,9 @@ public:
 
 private:
 	const double RADIUS = 5.0;
-	const double MAX_VELOCITY = 4.0;
-	const double VELOCITY_MULTIPLIER = 1.1;
+	const double MAX_VELOCITY = 5.0;
+
+	double speed = 1.0;
 
 	Vector2 position;
 	Vector2 velocity;

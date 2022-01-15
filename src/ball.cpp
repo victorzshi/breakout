@@ -4,7 +4,7 @@
 Ball::Ball()
 {
     position = Vector2();
-    velocity = Vector2(1.0, 1.0);
+    velocity = Vector2(0.0, speed);
 
     collider = { position.x, position.y, RADIUS };
 }
@@ -45,14 +45,24 @@ void Ball::update(Walls& walls, Paddle& paddle)
         velocity.y *= -1;
     }
 
-    if (Physics::is_collision(collider, paddle.get_collider()))
+    SDL_Rect p_collider = paddle.get_collider();
+    if (Physics::is_collision(collider, p_collider))
     {
         new_position = Vector2::subtract(position, velocity);
         set_position(new_position.x, new_position.y);
 
-        if (position.y <= paddle.get_collider().y) {
-            velocity.y *= -1;
-            velocity = Vector2::multiply(velocity, VELOCITY_MULTIPLIER);
+        if (position.y <= p_collider.y) {
+            // Change direction of ball
+            double paddle_x = p_collider.x + p_collider.w * 0.5;
+            double paddle_y = p_collider.y + p_collider.h * 2.0;
+
+            Vector2 paddle_position = Vector2(paddle_x, paddle_y);
+            Vector2 new_direction = Vector2::subtract(position, paddle_position);
+
+            speed += 0.5;
+
+            velocity = Vector2::normalize(new_direction);
+            velocity = Vector2::multiply(velocity, speed);
         }
         else
         {

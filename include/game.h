@@ -22,8 +22,8 @@ public:
 	void free();
 
 private:
-	static const int SCREEN_WIDTH = 640;
-	static const int SCREEN_HEIGHT = 480;
+	static const int SCREEN_WIDTH = 480;
+	static const int SCREEN_HEIGHT = 640;
 	static const int MS_PER_UPDATE = 5;
 
 	#ifdef _DEBUG
