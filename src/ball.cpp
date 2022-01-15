@@ -4,9 +4,7 @@
 Ball::Ball()
 {
     position = Vector2();
-    velocity = Vector2(0.0, 1.0);
-    velocity = Vector2::multiply(velocity, SPEED);
-    acceleration = Vector2(0.0, 0.0);
+    velocity = Vector2(0.0, speed);
 
     collider = { position.x, position.y, RADIUS };
 }
@@ -14,7 +12,6 @@ Ball::Ball()
 void Ball::set_position(double x, double y)
 {
     position = Vector2(x, y);
-
     update_collider();
 }
 
@@ -23,30 +20,54 @@ Circle& Ball::get_collider()
     return collider;
 }
 
-void Ball::update(Walls& walls)
+void Ball::update(Walls& walls, Paddle& paddle)
 {
-    velocity = Vector2::add(velocity, acceleration);
-    velocity = Vector2::limit(velocity, 10.0);
-    position = Vector2::add(position, velocity);
+    velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
-    update_collider();
+    Vector2 new_position = Vector2::add(position, velocity);
+    set_position(new_position.x, new_position.y);
 
     if (Physics::is_collision(collider, walls.get_left()) ||
         Physics::is_collision(collider, walls.get_right()))
     {
-        position = Vector2::subtract(position, velocity);
-        velocity.x *= -1;
+        new_position = Vector2::subtract(position, velocity);
+        set_position(new_position.x, new_position.y);
 
-        update_collider();
+        velocity.x *= -1;
     }
 
     if (Physics::is_collision(collider, walls.get_top()) ||
         Physics::is_collision(collider, walls.get_bottom()))
     {
-        position = Vector2::subtract(position, velocity);
-        velocity.y *= -1;
+        new_position = Vector2::subtract(position, velocity);
+        set_position(new_position.x, new_position.y);
 
-        update_collider();
+        velocity.y *= -1;
+    }
+
+    SDL_Rect p_collider = paddle.get_collider();
+    if (Physics::is_collision(collider, p_collider))
+    {
+        new_position = Vector2::subtract(position, velocity);
+        set_position(new_position.x, new_position.y);
+
+        if (position.y <= p_collider.y) {
+            // Change direction of ball
+            double paddle_x = p_collider.x + p_collider.w * 0.5;
+            double paddle_y = p_collider.y + p_collider.h * 2.0;
+
+            Vector2 paddle_position = Vector2(paddle_x, paddle_y);
+            Vector2 new_direction = Vector2::subtract(position, paddle_position);
+
+            speed += 0.5;
+
+            velocity = Vector2::normalize(new_direction);
+            velocity = Vector2::multiply(velocity, speed);
+        }
+        else
+        {
+            velocity.x *= -1;
+        }
     }
 }
 

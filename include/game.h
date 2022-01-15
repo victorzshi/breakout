@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 
 #include "ball.h"
+#include "paddle.h"
 #include "texture.h"
 #include "walls.h"
 
@@ -21,8 +22,8 @@ public:
 	void free();
 
 private:
-	static const int SCREEN_WIDTH = 640;
-	static const int SCREEN_HEIGHT = 480;
+	static const int SCREEN_WIDTH = 480;
+	static const int SCREEN_HEIGHT = 640;
 	static const int MS_PER_UPDATE = 5;
 
 	#ifdef _DEBUG
@@ -42,6 +43,7 @@ private:
 	TTF_Font* font;
 
 	Walls walls;
+	Paddle paddle;
 	Ball ball;
 
 	void process_input();
