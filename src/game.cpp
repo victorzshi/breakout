@@ -37,7 +37,7 @@ Game::Game()
 void Game::start()
 {
 	#ifdef _DEBUG
-		start_time = SDL_GetTicks64();
+		start_time = (int)SDL_GetTicks64();
 	#endif
 
 	is_running = true;
@@ -46,12 +46,12 @@ void Game::start()
 	paddle.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.8);
 	ball.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5);
 
-	double previous = SDL_GetTicks64();
+	double previous = (double)SDL_GetTicks64();
 	double lag = 0.0;
 
 	while (is_running)
 	{
-		double current = SDL_GetTicks64();
+		double current = (double)SDL_GetTicks64();
 		double elapsed = current - previous;
 		previous = current;
 		lag += elapsed;
@@ -125,7 +125,7 @@ void Game::update()
 	#endif
 
 	paddle.update(walls);
-	ball.update(walls);
+	ball.update(walls, paddle);
 }
 
 void Game::render(double elapsed_time)

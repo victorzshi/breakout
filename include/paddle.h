@@ -12,6 +12,10 @@ public:
 
 	void set_position(double x, double y);
 
+	Vector2 get_position();
+
+	SDL_Rect& get_collider();
+
 	void process_input(SDL_Event& event);
 
 	void update(Walls& walls);
@@ -21,11 +25,11 @@ public:
 	void free();
 
 private:
-	static const int WIDTH = 50;
-	static const int HEIGHT = 5;
+	static const int WIDTH = 60;
+	static const int HEIGHT = 10;
 
-	const double SPEED = 0.025;
-	const double MAX_SPEED = 2.0;
+	const double ACCELERATION = 0.1;
+	const double MAX_VELOCITY = 3.0;
 
 	Vector2 position;
 	Vector2 velocity;
@@ -34,4 +38,6 @@ private:
 	SDL_Rect collider;
 
 	void update_collider();
+
+	Vector2 calculate_top_left_corner(double x, double y);
 };

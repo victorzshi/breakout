@@ -7,14 +7,26 @@ Paddle::Paddle()
     velocity = Vector2();
     acceleration = Vector2();
 
-    collider = {0, 0, WIDTH, HEIGHT};
+    collider.x = 0;
+    collider.y = 0;
+    collider.w = WIDTH;
+    collider.h = HEIGHT;
 }
 
 void Paddle::set_position(double x, double y)
 {
     position = Vector2(x, y);
-
     update_collider();
+}
+
+Vector2 Paddle::get_position()
+{
+    return position;
+}
+
+SDL_Rect& Paddle::get_collider()
+{
+    return collider;
 }
 
 void Paddle::process_input(SDL_Event& event)
@@ -24,10 +36,10 @@ void Paddle::process_input(SDL_Event& event)
         switch (event.key.keysym.sym)
         {
         case SDLK_LEFT:
-            acceleration = Vector2(-SPEED, 0.0);
+            acceleration = Vector2(-ACCELERATION, 0.0);
             break;
         case SDLK_RIGHT:
-            acceleration = Vector2(SPEED, 0.0);
+            acceleration = Vector2(ACCELERATION, 0.0);
             break;
         }
     }
@@ -41,31 +53,31 @@ void Paddle::process_input(SDL_Event& event)
 void Paddle::update(Walls& walls)
 {
     velocity = Vector2::add(velocity, acceleration);
-    velocity = Vector2::limit(velocity, MAX_SPEED);
-    position = Vector2::add(position, velocity);
+    velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
-    update_collider();
+    Vector2 new_position = Vector2::add(position, velocity);
+    set_position(new_position.x, new_position.y);
 
     if (Physics::is_collision(collider, walls.get_left()) ||
         Physics::is_collision(collider, walls.get_right()))
     {
-        position = Vector2::subtract(position, velocity);
-
-        update_collider();
+        new_position = Vector2::subtract(position, velocity);
+        set_position(new_position.x, new_position.y);
     }
 }
 
 void Paddle::render(SDL_Renderer* renderer, double elapsed_time)
-{
+{ 
     SDL_Rect box;
 
     if (elapsed_time > 0)
     {
         Vector2 estimated_velocity = Vector2::multiply(velocity, elapsed_time);
         Vector2 rendered_position = Vector2::add(position, estimated_velocity);
+        Vector2 offset = calculate_top_left_corner(rendered_position.x, rendered_position.y);
 
-        int x = (int)round(rendered_position.x - WIDTH / 2.0);
-        int y = (int)round(rendered_position.y - HEIGHT / 2.0);
+        int x = (int)round(offset.x);
+        int y = (int)round(offset.y);
 
         box = { x, y, WIDTH, HEIGHT };
     }
@@ -73,7 +85,7 @@ void Paddle::render(SDL_Renderer* renderer, double elapsed_time)
     {
         box = collider;
     }
-    
+
     SDL_RenderFillRect(renderer, &box);
 }
 
@@ -84,6 +96,19 @@ void Paddle::free()
 
 void Paddle::update_collider()
 {
-    collider.x = (int)round(position.x - WIDTH / 2.0);
-    collider.y = (int)round(position.y - HEIGHT / 2.0);
+    Vector2 offset = calculate_top_left_corner(position.x, position.y);
+
+    int x = (int)round(offset.x);
+    int y = (int)round(offset.y);
+
+    collider.x = x;
+    collider.y = y;
+}
+
+Vector2 Paddle::calculate_top_left_corner(double x, double y)
+{
+    double offset_x = x - WIDTH * 0.5;
+    double offset_y = y - HEIGHT * 0.5;
+
+    return Vector2(offset_x, offset_y);
 }
