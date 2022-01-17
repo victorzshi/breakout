@@ -3,16 +3,25 @@
 
 Ball::Ball()
 {
+    start_position = Vector2();
     position = Vector2();
-    velocity = Vector2(0.0, speed);
+
+    current_velocity = START_VELOCITY;
+    velocity = Vector2(0.0, current_velocity);
 
     collider = { position.x, position.y, RADIUS };
 }
 
 void Ball::set_position(double x, double y)
 {
+    if (start_position.x == 0.0 && start_position.y == 0.0)
+    {
+        start_position = Vector2(x, y);
+    }
+
     position = Vector2(x, y);
-    update_collider();
+    collider.x = position.x;
+    collider.y = position.y;
 }
 
 Circle& Ball::get_collider()
@@ -36,8 +45,7 @@ void Ball::update(Walls& walls, Paddle& paddle)
         velocity.x *= -1;
     }
 
-    if (Physics::is_collision(collider, walls.get_top()) ||
-        Physics::is_collision(collider, walls.get_bottom()))
+    if (Physics::is_collision(collider, walls.get_top()))
     {
         new_position = Vector2::subtract(position, velocity);
         set_position(new_position.x, new_position.y);
@@ -59,15 +67,20 @@ void Ball::update(Walls& walls, Paddle& paddle)
             Vector2 paddle_position = Vector2(paddle_x, paddle_y);
             Vector2 new_direction = Vector2::subtract(position, paddle_position);
 
-            speed += 0.5;
+            current_velocity += INCREASE_VELOCITY;
 
             velocity = Vector2::normalize(new_direction);
-            velocity = Vector2::multiply(velocity, speed);
+            velocity = Vector2::multiply(velocity, current_velocity);
         }
         else
         {
             velocity.x *= -1;
         }
+    }
+
+    if (Physics::is_collision(collider, walls.get_bottom()))
+    {
+        reset();
     }
 }
 
@@ -120,8 +133,9 @@ void Ball::free()
 	return;
 }
 
-void Ball::update_collider()
+void Ball::reset()
 {
-    collider.x = position.x;
-    collider.y = position.y;
+    set_position(start_position.x, start_position.y);
+    current_velocity = START_VELOCITY;
+    velocity = Vector2(0.0, current_velocity);
 }

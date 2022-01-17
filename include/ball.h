@@ -24,14 +24,17 @@ public:
 
 private:
 	const double RADIUS = 5.0;
+	const double START_VELOCITY = 1.0;
+	const double INCREASE_VELOCITY = 0.25;
 	const double MAX_VELOCITY = 5.0;
 
-	double speed = 1.0;
+	double current_velocity;
 
+	Vector2 start_position;
 	Vector2 position;
 	Vector2 velocity;
 
 	Circle collider;
 
-	void update_collider();
+	void reset();
 };
