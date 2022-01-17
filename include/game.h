@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 
 #include "ball.h"
+#include "bricks.h"
 #include "paddle.h"
 #include "texture.h"
 #include "walls.h"
@@ -43,6 +44,7 @@ private:
 	TTF_Font* font;
 
 	Walls walls;
+	Bricks bricks;
 	Paddle paddle;
 	Ball ball;
 

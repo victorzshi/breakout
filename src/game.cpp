@@ -42,7 +42,8 @@ void Game::start()
 
 	is_running = true;
 
-	walls.set_dimensions(50, 50, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
+	walls.set_dimensions(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
+	bricks.set_dimensions(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 300, 30);
 	paddle.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.8);
 	ball.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5);
 
@@ -77,6 +78,7 @@ void Game::free()
 
 	ball.free();
 	paddle.free();
+	bricks.free();
 	walls.free();
 
 	TTF_CloseFont(font);
@@ -142,6 +144,7 @@ void Game::render(double elapsed_time)
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	walls.render(renderer);
+	bricks.render(renderer);
 	paddle.render(renderer, elapsed_time);
 	ball.render(renderer, elapsed_time);
 

@@ -7,7 +7,7 @@ class Walls
 public:
 	Walls();
 
-	void set_dimensions(int x, int y, int w, int h);
+	void set_dimensions(double x, double y, int w, int h);
 
 	SDL_Rect& get_top();
 
