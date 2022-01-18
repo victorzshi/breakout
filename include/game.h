@@ -32,6 +32,8 @@ private:
 	int start_time;
 	int frame_total;
 	int update_total;
+	TTF_Font* font;
+	SDL_Color font_color;
 	std::stringstream frame_text;
 	std::stringstream update_text;
 	Texture frames_per_second_texture;
@@ -42,7 +44,6 @@ private:
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	TTF_Font* font;
 
 	Score score;
 	Walls walls;
