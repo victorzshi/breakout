@@ -32,8 +32,8 @@ private:
 	int start_time;
 	int frame_total;
 	int update_total;
-	TTF_Font* font;
-	SDL_Color font_color;
+	TTF_Font* debug_font;
+	SDL_Color debug_font_color;
 	std::stringstream frame_text;
 	std::stringstream update_text;
 	Texture frames_per_second_texture;

@@ -10,6 +10,16 @@ Ball::Ball()
     velocity = Vector2(0.0, current_velocity);
 
     collider = { position.x, position.y, RADIUS };
+
+    is_reset = false;
+    reset_time = 0;
+
+    reset_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 32);
+    if (reset_font == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+        throw;
+    }
 }
 
 void Ball::set_position(double x, double y)
@@ -29,8 +39,42 @@ Circle& Ball::get_collider()
     return collider;
 }
 
-void Ball::update(Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
+void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
 {
+    if (is_reset)
+    {
+        int elapsed = SDL_GetTicks64() - reset_time;
+
+        if (elapsed < 3000)
+        {
+            int countdown = ((3000 - elapsed) / 1000) + 1;
+
+            reset_text.str("");
+            reset_text << countdown;
+
+            if (countdown == 3)
+            {
+                reset_text << "...";
+            }
+            else if (countdown == 2)
+            {
+                reset_text << "..";
+            }
+            else if (countdown == 1)
+            {
+                reset_text << ".";
+            }
+
+            reset_texture.load_text(renderer, reset_font, reset_text.str().c_str(), RESET_FONT_COLOR);
+        }
+        else
+        {
+            is_reset = false;
+        }
+
+        return;
+    }
+
     velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
     Vector2 new_position = Vector2::add(position, velocity);
@@ -116,6 +160,15 @@ void Ball::update(Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
 
 void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 {
+    if (is_reset)
+    {
+        int offset_x = (int)round(position.x - reset_texture.get_width() / 2.0);
+        int offset_y = (int)round(position.y - reset_texture.get_height() / 2.0);
+
+        reset_texture.render(renderer, offset_x, offset_y);
+        return;
+    }
+
     Vector2 rendered_position;
 
     if (elapsed_time > 0)
@@ -160,11 +213,17 @@ void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 
 void Ball::free()
 {
-	return;
+    reset_texture.free();
+
+    TTF_CloseFont(reset_font);
+    reset_font = NULL;
 }
 
 void Ball::reset()
 {
+    is_reset = true;
+    reset_time = SDL_GetTicks64();
+
     set_position(start_position.x, start_position.y);
     current_velocity = START_VELOCITY;
     velocity = Vector2(0.0, current_velocity);

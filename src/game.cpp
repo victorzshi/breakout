@@ -9,14 +9,14 @@ Game::Game()
 		frame_total = 0;
 		update_total = 0;
 
-		font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 8);
-		if (font == NULL)
+		debug_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 8);
+		if (debug_font == NULL)
 		{
 			printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 			throw;
 		}
 
-		font_color = { 0, 255, 0 };
+		debug_font_color = { 0, 255, 0 };
 	#endif
 
 	is_running = false;
@@ -78,8 +78,8 @@ void Game::free()
 		frames_per_second_texture.free();
 		updates_per_second_texture.free();
 		
-		TTF_CloseFont(font);
-		font = NULL;
+		TTF_CloseFont(debug_font);
+		debug_font = NULL;
 	#endif
 
 	ball.free();
@@ -122,8 +122,8 @@ void Game::update()
 		update_text.str("");
 		update_text << "Average Updates Per Second " << average_updates_per_second;
 
-		frames_per_second_texture.load_text(renderer, font, frame_text.str().c_str(), font_color);
-		updates_per_second_texture.load_text(renderer, font, update_text.str().c_str(), font_color);
+		frames_per_second_texture.load_text(renderer, debug_font, frame_text.str().c_str(), debug_font_color);
+		updates_per_second_texture.load_text(renderer, debug_font, update_text.str().c_str(), debug_font_color);
 
 		++update_total;
 	#endif
@@ -131,7 +131,7 @@ void Game::update()
 	score.update(renderer);
 	bricks.update(score);
 	paddle.update(walls);
-	ball.update(score, walls, bricks, paddle);
+	ball.update(renderer, score, walls, bricks, paddle);
 }
 
 void Game::render(double elapsed_time)

@@ -5,8 +5,8 @@ Score::Score()
 	score = 0;
 	is_game_over = false;
 
-	font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
-	if (font == NULL)
+	score_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
+	if (score_font == NULL)
 	{
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		throw;
@@ -50,7 +50,7 @@ void Score::update(SDL_Renderer* renderer)
 	score_text.str("");
 	score_text << "Total Score: " << score;
 
-	score_texture.load_text(renderer, font, score_text.str().c_str(), FONT_COLOR);
+	score_texture.load_text(renderer, score_font, score_text.str().c_str(), SCORE_FONT_COLOR);
 }
 
 void Score::render(SDL_Renderer* renderer)
@@ -65,6 +65,6 @@ void Score::free()
 {
 	score_texture.free();
 
-	TTF_CloseFont(font);
-	font = NULL;
+	TTF_CloseFont(score_font);
+	score_font = NULL;
 }

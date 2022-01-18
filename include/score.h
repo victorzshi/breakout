@@ -31,7 +31,7 @@ public:
 private:
 	static const int BREAK_BRICK_POINTS = 100;
 	static const int LOSE_BALL_POINTS = -500;
-	const SDL_Color FONT_COLOR = { 255, 255, 255 };
+	const SDL_Color SCORE_FONT_COLOR = { 255, 255, 255 };
 
 	Vector2 position;
 
@@ -39,9 +39,7 @@ private:
 
 	bool is_game_over;
 
-	TTF_Font* font;
-
+	TTF_Font* score_font;
 	std::stringstream score_text;
-
 	Texture score_texture;
 };
