@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 
+#include "bricks.h"
 #include "circle.h"
 #include "paddle.h"
 #include "vector_2.h"
@@ -16,7 +17,7 @@ public:
 
 	Circle& get_collider();
 
-	void update(Walls& walls, Paddle& paddle);
+	void update(Walls& walls, Bricks& bricks, Paddle& paddle);
 
 	void render(SDL_Renderer* renderer, double elapsed_time);
 
@@ -24,14 +25,17 @@ public:
 
 private:
 	const double RADIUS = 5.0;
+	const double START_VELOCITY = 1.0;
+	const double INCREASE_VELOCITY = 0.25;
 	const double MAX_VELOCITY = 5.0;
 
-	double speed = 1.0;
+	double current_velocity;
 
+	Vector2 start_position;
 	Vector2 position;
 	Vector2 velocity;
 
 	Circle collider;
 
-	void update_collider();
+	void reset();
 };

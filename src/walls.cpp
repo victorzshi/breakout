@@ -8,25 +8,28 @@ Walls::Walls()
 	right = { 0, 0, 0, 0 };
 }
 
-void Walls::set_dimensions(int x, int y, int w, int h)
+void Walls::set_dimensions(double x, double y, int w, int h)
 {
-	top.x = x;
-	top.y = y;
+	int offset_x = (int)round(x - w / 2.0);
+	int offset_y = (int)round(y - h / 2.0);
+
+	top.x = offset_x;
+	top.y = offset_y;
 	top.w = w;
 	top.h = THICKNESS;
 
-	bottom.x = x;
-	bottom.y = y + h - THICKNESS;
+	bottom.x = offset_x;
+	bottom.y = offset_y + h - THICKNESS;
 	bottom.w = w;
 	bottom.h = THICKNESS;
 
-	left.x = x;
-	left.y = y;
+	left.x = offset_x;
+	left.y = offset_y;
 	left.w = THICKNESS;
 	left.h = h;
 
-	right.x = x + w - THICKNESS;
-	right.y = y;
+	right.x = offset_x + w - THICKNESS;
+	right.y = offset_y;
 	right.w = THICKNESS;
 	right.h = h;
 }

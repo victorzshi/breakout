@@ -3,16 +3,25 @@
 
 Ball::Ball()
 {
+    start_position = Vector2();
     position = Vector2();
-    velocity = Vector2(0.0, speed);
+
+    current_velocity = START_VELOCITY;
+    velocity = Vector2(0.0, current_velocity);
 
     collider = { position.x, position.y, RADIUS };
 }
 
 void Ball::set_position(double x, double y)
 {
+    if (start_position.x == 0.0 && start_position.y == 0.0)
+    {
+        start_position = Vector2(x, y);
+    }
+
     position = Vector2(x, y);
-    update_collider();
+    collider.x = position.x;
+    collider.y = position.y;
 }
 
 Circle& Ball::get_collider()
@@ -20,7 +29,7 @@ Circle& Ball::get_collider()
     return collider;
 }
 
-void Ball::update(Walls& walls, Paddle& paddle)
+void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
 {
     velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
@@ -36,13 +45,45 @@ void Ball::update(Walls& walls, Paddle& paddle)
         velocity.x *= -1;
     }
 
-    if (Physics::is_collision(collider, walls.get_top()) ||
-        Physics::is_collision(collider, walls.get_bottom()))
+    if (Physics::is_collision(collider, walls.get_top()))
     {
         new_position = Vector2::subtract(position, velocity);
         set_position(new_position.x, new_position.y);
 
         velocity.y *= -1;
+    }
+
+    if (Physics::is_collision(collider, walls.get_bottom()))
+    {
+        reset();
+    }
+
+    if (Physics::is_collision(collider, bricks.get_collider()))
+    {
+        std::vector<std::vector<SDL_Rect>>& array_2d = bricks.get_bricks();
+
+        for (int i = 0; i < array_2d.size(); i++)
+        {
+            for (int j = 0; j < array_2d[i].size(); j++)
+            {
+                if (bricks.is_brick(i, j) && Physics::is_collision(collider, array_2d[i][j])) {
+                    new_position = Vector2::subtract(position, velocity);
+                    set_position(new_position.x, new_position.y);
+
+                    SDL_Rect brick = array_2d[i][j];
+
+                    if (position.y <= brick.y || position.y >= brick.y + brick.h) {
+                        velocity.y *= -1;
+                    }
+                    else
+                    {
+                        velocity.x *= -1;
+                    }
+
+                    bricks.remove_brick(i, j);
+                }
+            }
+        }
     }
 
     SDL_Rect p_collider = paddle.get_collider();
@@ -59,10 +100,10 @@ void Ball::update(Walls& walls, Paddle& paddle)
             Vector2 paddle_position = Vector2(paddle_x, paddle_y);
             Vector2 new_direction = Vector2::subtract(position, paddle_position);
 
-            speed += 0.5;
+            current_velocity += INCREASE_VELOCITY;
 
             velocity = Vector2::normalize(new_direction);
-            velocity = Vector2::multiply(velocity, speed);
+            velocity = Vector2::multiply(velocity, current_velocity);
         }
         else
         {
@@ -120,8 +161,9 @@ void Ball::free()
 	return;
 }
 
-void Ball::update_collider()
+void Ball::reset()
 {
-    collider.x = position.x;
-    collider.y = position.y;
+    set_position(start_position.x, start_position.y);
+    current_velocity = START_VELOCITY;
+    velocity = Vector2(0.0, current_velocity);
 }
