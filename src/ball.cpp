@@ -233,14 +233,14 @@ void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 
     while (offset_x >= offset_y)
     {
-        SDL_RenderDrawPoint(renderer, x + offset_x, y + offset_y);
-        SDL_RenderDrawPoint(renderer, x + offset_y, y + offset_x);
-        SDL_RenderDrawPoint(renderer, x - offset_y, y + offset_x);
-        SDL_RenderDrawPoint(renderer, x - offset_x, y + offset_y);
-        SDL_RenderDrawPoint(renderer, x - offset_x, y - offset_y);
-        SDL_RenderDrawPoint(renderer, x - offset_y, y - offset_x);
-        SDL_RenderDrawPoint(renderer, x + offset_y, y - offset_x);
-        SDL_RenderDrawPoint(renderer, x + offset_x, y - offset_y);
+        SDL_RenderDrawLine(renderer, x, y, x + offset_x, y + offset_y);
+        SDL_RenderDrawLine(renderer, x, y, x + offset_y, y + offset_x);
+        SDL_RenderDrawLine(renderer, x, y, x - offset_y, y + offset_x);
+        SDL_RenderDrawLine(renderer, x, y, x - offset_x, y + offset_y);
+        SDL_RenderDrawLine(renderer, x, y, x - offset_x, y - offset_y);
+        SDL_RenderDrawLine(renderer, x, y, x - offset_y, y - offset_x);
+        SDL_RenderDrawLine(renderer, x, y, x + offset_y, y - offset_x);
+        SDL_RenderDrawLine(renderer, x, y, x + offset_x, y - offset_y);
 
         if (error <= 0)
         {
