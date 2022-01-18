@@ -2,6 +2,8 @@
 
 Bricks::Bricks()
 {
+	total_bricks = 0;
+	removed_bricks = 0;
 	collider = { 0, 0, 0, 0 };
 }
 
@@ -14,6 +16,7 @@ void Bricks::set_dimensions(double x, double y, int w, int h)
 
 	int total_bricks_width = w / BRICK_WIDTH;
 	int total_bricks_height = h / BRICK_HEIGHT;
+	total_bricks = total_bricks_width * total_bricks_height;
 
 	bricks.resize(total_bricks_height);
 	for (int i = 0; i < bricks.size(); i++)
@@ -54,10 +57,31 @@ bool Bricks::is_brick(int i, int j)
 
 void Bricks::remove_brick(int i, int j)
 {
-	bricks[i][j].x = NULL;
-	bricks[i][j].y = NULL;
-	bricks[i][j].h = NULL;
-	bricks[i][j].w = NULL;
+	if (is_brick(i, j))
+	{
+		bricks[i][j].x = NULL;
+		bricks[i][j].y = NULL;
+		bricks[i][j].h = NULL;
+		bricks[i][j].w = NULL;
+
+		++removed_bricks;
+	}
+	else
+	{
+		throw;
+	}
+}
+
+void Bricks::update(Score& score)
+{
+	int current_score = removed_bricks * BRICK_POINTS;
+	int max_score = total_bricks * BRICK_POINTS;
+
+	score.set_score(current_score);
+	if (current_score >= max_score)
+	{
+		score.set_game_over();
+	}
 }
 
 void Bricks::render(SDL_Renderer* renderer)

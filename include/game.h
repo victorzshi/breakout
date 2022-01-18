@@ -10,6 +10,7 @@
 #include "ball.h"
 #include "bricks.h"
 #include "paddle.h"
+#include "score.h"
 #include "texture.h"
 #include "walls.h"
 
@@ -43,6 +44,7 @@ private:
 	SDL_Renderer* renderer;
 	TTF_Font* font;
 
+	Score score;
 	Walls walls;
 	Bricks bricks;
 	Paddle paddle;

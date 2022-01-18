@@ -42,6 +42,7 @@ void Game::start()
 
 	is_running = true;
 
+	score.set_position(SCREEN_WIDTH * 0.5, 25);
 	walls.set_dimensions(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
 	bricks.set_dimensions(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 300, 30);
 	paddle.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.8);
@@ -50,7 +51,7 @@ void Game::start()
 	double previous = (double)SDL_GetTicks64();
 	double lag = 0.0;
 
-	while (is_running)
+	while (is_running && score.get_game_over() == false)
 	{
 		double current = (double)SDL_GetTicks64();
 		double elapsed = current - previous;
@@ -80,6 +81,7 @@ void Game::free()
 	paddle.free();
 	bricks.free();
 	walls.free();
+	score.free();
 
 	TTF_CloseFont(font);
 	font = NULL;
@@ -126,6 +128,8 @@ void Game::update()
 		++update_total;
 	#endif
 
+	score.update(renderer);
+	bricks.update(score);
 	paddle.update(walls);
 	ball.update(walls, bricks, paddle);
 }
@@ -143,6 +147,7 @@ void Game::render(double elapsed_time)
 	#endif
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	score.render(renderer);
 	walls.render(renderer);
 	bricks.render(renderer);
 	paddle.render(renderer, elapsed_time);
