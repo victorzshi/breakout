@@ -10,16 +10,25 @@ Ball::Ball()
     velocity = Vector2(0.0, current_velocity);
 
     collider = { position.x, position.y, RADIUS };
+
+    reset_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 32);
+    if (reset_font == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+        throw;
+    }
+
+    reset();
 }
 
-void Ball::set_position(double x, double y)
+void Ball::set_position(Vector2 v)
 {
     if (start_position.x == 0.0 && start_position.y == 0.0)
     {
-        start_position = Vector2(x, y);
+        start_position = v;
     }
 
-    position = Vector2(x, y);
+    position = v;
     collider.x = position.x;
     collider.y = position.y;
 }
@@ -29,18 +38,52 @@ Circle& Ball::get_collider()
     return collider;
 }
 
-void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
+void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
 {
+    if (is_reset)
+    {
+        int elapsed = SDL_GetTicks64() - reset_time;
+
+        if (elapsed < 3000)
+        {
+            int countdown = ((3000 - elapsed) / 1000) + 1;
+
+            reset_text.str("");
+            reset_text << countdown;
+
+            if (countdown == 3)
+            {
+                reset_text << "...";
+            }
+            else if (countdown == 2)
+            {
+                reset_text << "..";
+            }
+            else if (countdown == 1)
+            {
+                reset_text << ".";
+            }
+
+            reset_texture.load_text(renderer, reset_font, reset_text.str().c_str(), RESET_FONT_COLOR);
+        }
+        else
+        {
+            is_reset = false;
+        }
+
+        return;
+    }
+
     velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
     Vector2 new_position = Vector2::add(position, velocity);
-    set_position(new_position.x, new_position.y);
+    set_position(new_position);
 
     if (Physics::is_collision(collider, walls.get_left()) ||
         Physics::is_collision(collider, walls.get_right()))
     {
         new_position = Vector2::subtract(position, velocity);
-        set_position(new_position.x, new_position.y);
+        set_position(new_position);
 
         velocity.x *= -1;
     }
@@ -48,7 +91,7 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
     if (Physics::is_collision(collider, walls.get_top()))
     {
         new_position = Vector2::subtract(position, velocity);
-        set_position(new_position.x, new_position.y);
+        set_position(new_position);
 
         velocity.y *= -1;
     }
@@ -56,6 +99,7 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
     if (Physics::is_collision(collider, walls.get_bottom()))
     {
         reset();
+        score.lose_ball();
     }
 
     if (Physics::is_collision(collider, bricks.get_collider()))
@@ -68,11 +112,12 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
             {
                 if (bricks.is_brick(i, j) && Physics::is_collision(collider, array_2d[i][j])) {
                     new_position = Vector2::subtract(position, velocity);
-                    set_position(new_position.x, new_position.y);
+                    set_position(new_position);
 
                     SDL_Rect brick = array_2d[i][j];
 
-                    if (position.y <= brick.y || position.y >= brick.y + brick.h) {
+                    if (position.y <= brick.y - RADIUS || 
+                        position.y >= brick.y + brick.h + RADIUS) {
                         velocity.y *= -1;
                     }
                     else
@@ -81,6 +126,7 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
                     }
 
                     bricks.remove_brick(i, j);
+                    score.break_brick();
                 }
             }
         }
@@ -90,10 +136,10 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
     if (Physics::is_collision(collider, p_collider))
     {
         new_position = Vector2::subtract(position, velocity);
-        set_position(new_position.x, new_position.y);
+        set_position(new_position);
 
-        if (position.y <= p_collider.y) {
-            // Change direction of ball
+        // Change direction of ball
+        if (position.y < p_collider.y) {
             double paddle_x = p_collider.x + p_collider.w * 0.5;
             double paddle_y = p_collider.y + p_collider.h * 2.0;
 
@@ -107,13 +153,66 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
         }
         else
         {
-            velocity.x *= -1;
+            // Do not let ball get stuck inside paddle
+            if (position.x < p_collider.x)
+            {
+                new_position = Vector2(p_collider.x - RADIUS, new_position.y);
+                set_position(new_position);
+
+                // Do not let ball get stuck inside wall
+                if (Physics::is_collision(collider, walls.get_left()))
+                {
+                    new_position = Vector2(p_collider.x + RADIUS, p_collider.y + p_collider.h + RADIUS);
+                    set_position(new_position);
+                }
+            }
+            else
+            {
+                new_position = Vector2(p_collider.x + p_collider.w + RADIUS, new_position.y);
+                set_position(new_position);
+
+                if (Physics::is_collision(collider, walls.get_right()))
+                {
+                    new_position = Vector2(p_collider.x + p_collider.w - RADIUS, p_collider.y + p_collider.h + RADIUS);
+                    set_position(new_position);
+                }
+            }
+
+            double paddle_x = p_collider.x + p_collider.w * 0.5;
+            double paddle_y = p_collider.y + p_collider.h * -2.0;
+
+            Vector2 paddle_position = Vector2(paddle_x, paddle_y);
+            Vector2 new_direction = Vector2::subtract(position, paddle_position);
+
+            double paddle_magnitude = Vector2::magnitude(paddle.get_velocity());
+            double ball_magnitude = Vector2::magnitude(velocity);
+
+            velocity = Vector2::normalize(new_direction);
+
+            if (paddle_magnitude > ball_magnitude)
+            {
+                velocity = Vector2::multiply(velocity, paddle_magnitude * 1.5);
+            }
+            else
+            {
+                velocity = Vector2::multiply(velocity, ball_magnitude);
+            }
+
         }
     }
 }
 
 void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 {
+    if (is_reset)
+    {
+        int offset_x = (int)round(position.x - reset_texture.get_width() / 2.0);
+        int offset_y = (int)round(position.y - reset_texture.get_height() / 2.0);
+
+        reset_texture.render(renderer, offset_x, offset_y);
+        return;
+    }
+
     Vector2 rendered_position;
 
     if (elapsed_time > 0)
@@ -158,12 +257,18 @@ void Ball::render(SDL_Renderer* renderer, double elapsed_time)
 
 void Ball::free()
 {
-	return;
+    reset_texture.free();
+
+    TTF_CloseFont(reset_font);
+    reset_font = NULL;
 }
 
 void Ball::reset()
 {
-    set_position(start_position.x, start_position.y);
+    is_reset = true;
+    reset_time = SDL_GetTicks64();
+
+    set_position(start_position);
     current_velocity = START_VELOCITY;
     velocity = Vector2(0.0, current_velocity);
 }

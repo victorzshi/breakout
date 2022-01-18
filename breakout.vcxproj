@@ -153,6 +153,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\paddle.cpp" />
     <ClCompile Include="src\physics.cpp" />
+    <ClCompile Include="src\score.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\vector_2.cpp" />
     <ClCompile Include="src\walls.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="include\game.h" />
     <ClInclude Include="include\paddle.h" />
     <ClInclude Include="include\physics.h" />
+    <ClInclude Include="include\score.h" />
     <ClInclude Include="include\texture.h" />
     <ClInclude Include="include\vector_2.h" />
     <ClInclude Include="include\walls.h" />

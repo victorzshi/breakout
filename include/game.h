@@ -10,6 +10,7 @@
 #include "ball.h"
 #include "bricks.h"
 #include "paddle.h"
+#include "score.h"
 #include "texture.h"
 #include "walls.h"
 
@@ -31,6 +32,8 @@ private:
 	int start_time;
 	int frame_total;
 	int update_total;
+	TTF_Font* debug_font;
+	SDL_Color debug_font_color;
 	std::stringstream frame_text;
 	std::stringstream update_text;
 	Texture frames_per_second_texture;
@@ -41,12 +44,17 @@ private:
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	TTF_Font* font;
 
+	Score score;
 	Walls walls;
 	Bricks bricks;
 	Paddle paddle;
 	Ball ball;
+
+	TTF_Font* game_over_font;
+	SDL_Color game_over_font_color;
+	std::stringstream game_over_text;
+	Texture game_over_texture;
 
 	void process_input();
 
