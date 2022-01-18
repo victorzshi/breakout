@@ -29,7 +29,7 @@ Circle& Ball::get_collider()
     return collider;
 }
 
-void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
+void Ball::update(Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
 {
     velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
@@ -56,6 +56,7 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
     if (Physics::is_collision(collider, walls.get_bottom()))
     {
         reset();
+        score.lose_ball();
     }
 
     if (Physics::is_collision(collider, bricks.get_collider()))
@@ -81,6 +82,7 @@ void Ball::update(Walls& walls, Bricks& bricks, Paddle& paddle)
                     }
 
                     bricks.remove_brick(i, j);
+                    score.break_brick();
                 }
             }
         }

@@ -74,13 +74,9 @@ void Bricks::remove_brick(int i, int j)
 
 void Bricks::update(Score& score)
 {
-	int current_score = removed_bricks * BRICK_POINTS;
-	int max_score = total_bricks * BRICK_POINTS;
-
-	score.set_score(current_score);
-	if (current_score >= max_score)
+	if (removed_bricks >= total_bricks)
 	{
-		score.set_game_over();
+		score.set_is_game_over(true);
 	}
 }
 

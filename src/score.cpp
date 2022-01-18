@@ -3,7 +3,7 @@
 Score::Score()
 {
 	score = 0;
-	game_over = false;
+	is_game_over = false;
 
 	font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
 	if (font == NULL)
@@ -18,19 +18,31 @@ void Score::set_position(double x, double y)
 	position = Vector2(x, y);
 }
 
-void Score::set_score(int score)
+void Score::break_brick()
 {
-	this->score = score;
+	score += BREAK_BRICK_POINTS;
 }
 
-void Score::set_game_over()
+void Score::lose_ball()
 {
-	game_over = true;
+	if (score + LOSE_BALL_POINTS > 0)
+	{
+		score += LOSE_BALL_POINTS;
+	}
+	else
+	{
+		score = 0;
+	}
 }
 
-bool Score::get_game_over()
+void Score::set_is_game_over(bool is_game_over)
 {
-	return game_over;
+	this->is_game_over = is_game_over;
+}
+
+bool Score::get_is_game_over()
+{
+	return is_game_over;
 }
 
 void Score::update(SDL_Renderer* renderer)

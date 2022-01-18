@@ -30,7 +30,6 @@ public:
 private:
 	static const int BRICK_WIDTH = 30;
 	static const int BRICK_HEIGHT = 10;
-	static const int BRICK_POINTS = 100;
 
 	int total_bricks, removed_bricks;
 

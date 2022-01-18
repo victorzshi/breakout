@@ -15,11 +15,13 @@ public:
 
 	void set_position(double x, double y);
 
-	void set_score(int score);
+	void break_brick();
 
-	void set_game_over();
+	void lose_ball();
 
-	bool get_game_over();
+	void set_is_game_over(bool is_game_over);
+
+	bool get_is_game_over();
 
 	void update(SDL_Renderer* renderer);
 
@@ -27,13 +29,15 @@ public:
 
 	void free();
 private:
+	static const int BREAK_BRICK_POINTS = 100;
+	static const int LOSE_BALL_POINTS = -500;
 	const SDL_Color FONT_COLOR = { 255, 255, 255 };
 
 	Vector2 position;
 
 	int score;
 
-	bool game_over;
+	bool is_game_over;
 
 	TTF_Font* font;
 

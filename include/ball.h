@@ -5,6 +5,7 @@
 #include "bricks.h"
 #include "circle.h"
 #include "paddle.h"
+#include "score.h"
 #include "vector_2.h"
 #include "walls.h"
 
@@ -17,7 +18,7 @@ public:
 
 	Circle& get_collider();
 
-	void update(Walls& walls, Bricks& bricks, Paddle& paddle);
+	void update(Score& score, Walls& walls, Bricks& bricks, Paddle& paddle);
 
 	void render(SDL_Renderer* renderer, double elapsed_time);
 

@@ -53,7 +53,7 @@ void Game::start()
 	double previous = (double)SDL_GetTicks64();
 	double lag = 0.0;
 
-	while (is_running && score.get_game_over() == false)
+	while (is_running && !score.get_is_game_over())
 	{
 		double current = (double)SDL_GetTicks64();
 		double elapsed = current - previous;
@@ -131,7 +131,7 @@ void Game::update()
 	score.update(renderer);
 	bricks.update(score);
 	paddle.update(walls);
-	ball.update(walls, bricks, paddle);
+	ball.update(score, walls, bricks, paddle);
 }
 
 void Game::render(double elapsed_time)
