@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 
+#include "bricks.h"
 #include "circle.h"
 #include "paddle.h"
 #include "vector_2.h"
@@ -16,7 +17,7 @@ public:
 
 	Circle& get_collider();
 
-	void update(Walls& walls, Paddle& paddle);
+	void update(Walls& walls, Bricks& bricks, Paddle& paddle);
 
 	void render(SDL_Renderer* renderer, double elapsed_time);
 

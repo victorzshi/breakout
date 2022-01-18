@@ -39,6 +39,27 @@ std::vector<std::vector<SDL_Rect>>& Bricks::get_bricks()
 	return bricks;
 }
 
+bool Bricks::is_brick(int i, int j)
+{
+	SDL_Rect brick = bricks[i][j];
+	if (brick.x == NULL && brick.y == NULL && brick.w == NULL && brick.h == NULL)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+void Bricks::remove_brick(int i, int j)
+{
+	bricks[i][j].x = NULL;
+	bricks[i][j].y = NULL;
+	bricks[i][j].h = NULL;
+	bricks[i][j].w = NULL;
+}
+
 void Bricks::render(SDL_Renderer* renderer)
 {
 	for (int i = 0; i < bricks.size(); i++)

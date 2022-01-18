@@ -127,7 +127,7 @@ void Game::update()
 	#endif
 
 	paddle.update(walls);
-	ball.update(walls, paddle);
+	ball.update(walls, bricks, paddle);
 }
 
 void Game::render(double elapsed_time)
