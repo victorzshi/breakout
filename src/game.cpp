@@ -16,7 +16,7 @@ Game::Game()
 			throw;
 		}
 
-		debug_font_color = {0, 255, 255};
+		debug_font_color = {0, 255, 0};
 	#endif
 
 	is_running = false;
