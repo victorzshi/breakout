@@ -29,7 +29,7 @@ private:
 	const double RADIUS = 5.0;
 	const double START_VELOCITY = 1.0;
 	const double INCREASE_VELOCITY = 0.25;
-	const double MAX_VELOCITY = 5.0;
+	const double MAX_VELOCITY = 4.0;
 	const SDL_Color RESET_FONT_COLOR = { 255, 255, 255 };
 
 	double current_velocity;

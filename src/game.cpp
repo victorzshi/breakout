@@ -16,7 +16,7 @@ Game::Game()
 			throw;
 		}
 
-		debug_font_color = { 0, 255, 0 };
+		debug_font_color = {0, 255, 255};
 	#endif
 
 	is_running = false;
@@ -34,6 +34,15 @@ Game::Game()
 		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
 		throw;
 	}
+
+	game_over_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
+	if (game_over_font == NULL)
+	{
+		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+		throw;
+	}
+
+	game_over_font_color = { 0, 255, 0 };
 }
 
 void Game::start()
@@ -53,7 +62,7 @@ void Game::start()
 	double previous = (double)SDL_GetTicks64();
 	double lag = 0.0;
 
-	while (is_running && !score.get_is_game_over())
+	while (is_running)
 	{
 		double current = (double)SDL_GetTicks64();
 		double elapsed = current - previous;
@@ -82,6 +91,10 @@ void Game::free()
 		debug_font = NULL;
 	#endif
 
+	game_over_texture.free();
+	TTF_CloseFont(game_over_font);
+	game_over_font = NULL;
+
 	ball.free();
 	paddle.free();
 	bricks.free();
@@ -105,7 +118,10 @@ void Game::process_input()
 			is_running = false;
 		}
 
-		paddle.process_input(event);
+		if (!score.get_is_game_over())
+		{
+			paddle.process_input(event);
+		}
 	}
 }
 
@@ -128,10 +144,44 @@ void Game::update()
 		++update_total;
 	#endif
 
-	score.update(renderer);
-	bricks.update(score);
-	paddle.update(walls);
-	ball.update(renderer, score, walls, bricks, paddle);
+	if (!score.get_is_game_over())
+	{
+		score.update(renderer);
+		bricks.update(score);
+		paddle.update(walls);
+		ball.update(renderer, score, walls, bricks, paddle);
+	}
+	else
+	{
+		int total_score = score.get_total_score();
+		int max_score = score.get_max_score(bricks.get_total_bricks());
+		int score_difference = max_score - total_score;
+
+		game_over_text.str("");
+		SDL_Color color;
+		if (score_difference == 0)
+		{
+			game_over_text << "Not bad... you had a perfect game! Thanks for playing - Victor";
+			color = { 255, 255, 0 };
+		}
+		else if (score_difference <= max_score * 0.3)
+		{
+			game_over_text << "So close! " << score_difference << " points away from perfect...";
+			color = { 0, 255, 0 };
+		}
+		else if (score_difference <= max_score * 0.6)
+		{
+			game_over_text << "Nice. " << score_difference << " points away from perfect...";
+			color = { 0, 0, 255 };
+		}
+		else
+		{
+			game_over_text << "You can do better?";
+			color = { 255, 255, 255 };
+		}
+
+		game_over_texture.load_text(renderer, game_over_font, game_over_text.str().c_str(), color);
+	}
 }
 
 void Game::render(double elapsed_time)
@@ -147,11 +197,25 @@ void Game::render(double elapsed_time)
 	#endif
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	score.render(renderer);
-	walls.render(renderer);
-	bricks.render(renderer);
-	paddle.render(renderer, elapsed_time);
-	ball.render(renderer, elapsed_time);
+
+	if (!score.get_is_game_over())
+	{
+		score.render(renderer);
+		walls.render(renderer);
+		bricks.render(renderer);
+		paddle.render(renderer, elapsed_time);
+		ball.render(renderer, elapsed_time);
+	}
+	else
+	{
+		score.render(renderer);
+		walls.render(renderer);
+
+		int offset_x = (int)round(SCREEN_WIDTH / 2.0 - game_over_texture.get_width() / 2.0);
+		int offset_y = (int)round(SCREEN_HEIGHT / 2.0 - game_over_texture.get_height() / 2.0);
+
+		game_over_texture.render(renderer, offset_x, offset_y);
+	}
 
 	SDL_RenderPresent(renderer);
 }

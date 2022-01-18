@@ -51,6 +51,11 @@ private:
 	Paddle paddle;
 	Ball ball;
 
+	TTF_Font* game_over_font;
+	SDL_Color game_over_font_color;
+	std::stringstream game_over_text;
+	Texture game_over_texture;
+
 	void process_input();
 
 	void update();

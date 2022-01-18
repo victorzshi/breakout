@@ -42,6 +42,11 @@ std::vector<std::vector<SDL_Rect>>& Bricks::get_bricks()
 	return bricks;
 }
 
+int Bricks::get_total_bricks()
+{
+	return total_bricks;
+}
+
 bool Bricks::is_brick(int i, int j)
 {
 	SDL_Rect brick = bricks[i][j];

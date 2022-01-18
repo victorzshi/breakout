@@ -116,7 +116,8 @@ void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& br
 
                     SDL_Rect brick = array_2d[i][j];
 
-                    if (position.y <= brick.y || position.y >= brick.y + brick.h) {
+                    if (position.y <= brick.y - RADIUS || 
+                        position.y >= brick.y + brick.h + RADIUS) {
                         velocity.y *= -1;
                     }
                     else
@@ -183,10 +184,10 @@ void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& br
             Vector2 paddle_position = Vector2(paddle_x, paddle_y);
             Vector2 new_direction = Vector2::subtract(position, paddle_position);
 
-            velocity = Vector2::normalize(new_direction);
-
             double paddle_magnitude = Vector2::magnitude(paddle.get_velocity());
             double ball_magnitude = Vector2::magnitude(velocity);
+
+            velocity = Vector2::normalize(new_direction);
 
             if (paddle_magnitude > ball_magnitude)
             {

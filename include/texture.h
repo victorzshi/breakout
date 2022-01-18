@@ -20,6 +20,8 @@ public:
 	void free();
 
 private:
+	static const int WRAP_LENGTH = 300;
+
 	SDL_Texture* texture;
 
 	int width;
