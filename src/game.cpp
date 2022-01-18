@@ -48,7 +48,7 @@ void Game::start()
 	walls.set_dimensions(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
 	bricks.set_dimensions(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 300, 30);
 	paddle.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.8);
-	ball.set_position(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5);
+	ball.set_position(Vector2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5));
 
 	double previous = (double)SDL_GetTicks64();
 	double lag = 0.0;

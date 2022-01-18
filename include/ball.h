@@ -15,7 +15,7 @@ class Ball
 public:
 	Ball();
 
-	void set_position(double x, double y);
+	void set_position(Vector2 v);
 
 	Circle& get_collider();
 

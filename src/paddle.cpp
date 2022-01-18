@@ -24,6 +24,11 @@ Vector2 Paddle::get_position()
     return position;
 }
 
+Vector2 Paddle::get_velocity()
+{
+    return velocity;
+}
+
 SDL_Rect& Paddle::get_collider()
 {
     return collider;

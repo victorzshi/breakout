@@ -14,6 +14,8 @@ public:
 
 	Vector2 get_position();
 
+	Vector2 get_velocity();
+
 	SDL_Rect& get_collider();
 
 	void process_input(SDL_Event& event);
