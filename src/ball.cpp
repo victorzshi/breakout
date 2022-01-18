@@ -11,15 +11,14 @@ Ball::Ball()
 
     collider = { position.x, position.y, RADIUS };
 
-    is_reset = false;
-    reset_time = 0;
-
     reset_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 32);
     if (reset_font == NULL)
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
         throw;
     }
+
+    reset();
 }
 
 void Ball::set_position(Vector2 v)

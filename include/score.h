@@ -13,7 +13,7 @@ class Score
 public:
 	Score();
 
-	void set_position(double x, double y);
+	void set_position(Vector2 v);
 
 	void break_brick();
 

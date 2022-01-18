@@ -13,9 +13,9 @@ Score::Score()
 	}
 }
 
-void Score::set_position(double x, double y)
+void Score::set_position(Vector2 v)
 {
-	position = Vector2(x, y);
+	position = v;
 }
 
 void Score::break_brick()

@@ -13,10 +13,17 @@ Paddle::Paddle()
     collider.h = HEIGHT;
 }
 
-void Paddle::set_position(double x, double y)
+void Paddle::set_position(Vector2 v)
 {
-    position = Vector2(x, y);
-    update_collider();
+    position = v;
+
+    Vector2 offset = calculate_top_left_corner(position.x, position.y);
+
+    int x = (int)round(offset.x);
+    int y = (int)round(offset.y);
+
+    collider.x = x;
+    collider.y = y;
 }
 
 Vector2 Paddle::get_position()
@@ -61,13 +68,13 @@ void Paddle::update(Walls& walls)
     velocity = Vector2::limit(velocity, MAX_VELOCITY);
 
     Vector2 new_position = Vector2::add(position, velocity);
-    set_position(new_position.x, new_position.y);
+    set_position(new_position);
 
     if (Physics::is_collision(collider, walls.get_left()) ||
         Physics::is_collision(collider, walls.get_right()))
     {
         new_position = Vector2::subtract(position, velocity);
-        set_position(new_position.x, new_position.y);
+        set_position(new_position);
     }
 }
 
@@ -97,17 +104,6 @@ void Paddle::render(SDL_Renderer* renderer, double elapsed_time)
 void Paddle::free()
 {
 	return;
-}
-
-void Paddle::update_collider()
-{
-    Vector2 offset = calculate_top_left_corner(position.x, position.y);
-
-    int x = (int)round(offset.x);
-    int y = (int)round(offset.y);
-
-    collider.x = x;
-    collider.y = y;
 }
 
 Vector2 Paddle::calculate_top_left_corner(double x, double y)

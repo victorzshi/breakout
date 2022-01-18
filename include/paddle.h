@@ -10,7 +10,7 @@ class Paddle
 public:
 	Paddle();
 
-	void set_position(double x, double y);
+	void set_position(Vector2 v);
 
 	Vector2 get_position();
 
@@ -38,8 +38,6 @@ private:
 	Vector2 acceleration;
 
 	SDL_Rect collider;
-
-	void update_collider();
 
 	Vector2 calculate_top_left_corner(double x, double y);
 };
