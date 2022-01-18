@@ -91,9 +91,32 @@ void Bricks::render(SDL_Renderer* renderer)
 	{
 		for (int j = 0; j < bricks[i].size(); j++)
 		{
-			SDL_RenderDrawRect(renderer, &bricks[i][j]);
+			int index = i % 3;
+			switch (index)
+			{
+			case 2:
+				SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+				break;
+			case 1:
+				SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+				break;
+			case 0:
+				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF);
+				break;
+			}
+
+			SDL_Rect brick;
+			brick.x = bricks[i][j].x + 1;
+			brick.y = bricks[i][j].y + 1;
+			brick.w = bricks[i][j].w - 2;
+			brick.h = bricks[i][j].h - 2;
+
+			SDL_RenderFillRect(renderer, &brick);
 		}
 	}
+
+	// Reset render color
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
 void Bricks::free()
