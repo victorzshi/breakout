@@ -14,7 +14,7 @@ Ball::Ball()
     reset_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 32);
     if (reset_font == NULL)
     {
-        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+        printf("Failed to load reset font! SDL_ttf Error: %s\n", TTF_GetError());
         throw;
     }
 
@@ -38,7 +38,7 @@ Circle& Ball::get_collider()
     return collider;
 }
 
-void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
+void Ball::update(SDL_Renderer* renderer, Audio& audio, Score& score, Walls& walls, Bricks& bricks, Paddle& paddle)
 {
     if (is_reset)
     {
@@ -86,6 +86,8 @@ void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& br
         set_position(new_position);
 
         velocity.x *= -1;
+
+        audio.play_plop();
     }
 
     if (Physics::is_collision(collider, walls.get_top()))
@@ -94,12 +96,15 @@ void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& br
         set_position(new_position);
 
         velocity.y *= -1;
+
+        audio.play_plop();
     }
 
     if (Physics::is_collision(collider, walls.get_bottom()))
     {
         reset();
         score.lose_ball();
+        audio.play_death();
     }
 
     if (Physics::is_collision(collider, bricks.get_collider()))
@@ -127,6 +132,7 @@ void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& br
 
                     bricks.remove_brick(i, j);
                     score.break_brick();
+                    audio.play_beeep();
                 }
             }
         }
@@ -199,6 +205,8 @@ void Ball::update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& br
             }
 
         }
+
+        audio.play_peeeeeep();
     }
 }
 

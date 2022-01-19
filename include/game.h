@@ -5,8 +5,10 @@
 #endif
 
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
+#include "audio.h"
 #include "ball.h"
 #include "bricks.h"
 #include "paddle.h"
@@ -45,6 +47,7 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
+	Audio audio;
 	Score score;
 	Walls walls;
 	Bricks bricks;

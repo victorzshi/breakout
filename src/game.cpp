@@ -12,7 +12,7 @@ Game::Game()
 		debug_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 8);
 		if (debug_font == NULL)
 		{
-			printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+			printf("Failed to load debug font! SDL_ttf Error: %s\n", TTF_GetError());
 			throw;
 		}
 
@@ -38,7 +38,7 @@ Game::Game()
 	game_over_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
 	if (game_over_font == NULL)
 	{
-		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+		printf("Failed to load game over font! SDL_ttf Error: %s\n", TTF_GetError());
 		throw;
 	}
 
@@ -100,6 +100,7 @@ void Game::free()
 	bricks.free();
 	walls.free();
 	score.free();
+	audio.free();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -149,7 +150,7 @@ void Game::update()
 		score.update(renderer);
 		bricks.update(score);
 		paddle.update(walls);
-		ball.update(renderer, score, walls, bricks, paddle);
+		ball.update(renderer, audio, score, walls, bricks, paddle);
 	}
 	else
 	{
@@ -163,21 +164,25 @@ void Game::update()
 		{
 			game_over_text << "Not bad... you had a perfect game! Thanks for playing - Victor";
 			color = { 255, 255, 0 };
+			audio.play_flawless_victory();
 		}
 		else if (score_difference <= max_score * 0.3)
 		{
-			game_over_text << "So close! " << score_difference << " points away from perfect...";
+			game_over_text << "Nice! " << score_difference << " points away from a perfect score...";
 			color = { 0, 255, 0 };
+			audio.play_winner();
 		}
 		else if (score_difference <= max_score * 0.6)
 		{
-			game_over_text << "Nice. " << score_difference << " points away from perfect...";
+			game_over_text << "Not bad. " << score_difference << " points away from a perfect score...";
 			color = { 0, 0, 255 };
+			audio.play_you_win();
 		}
 		else
 		{
 			game_over_text << "You can do better?";
 			color = { 255, 255, 255 };
+			audio.play_game_over();
 		}
 
 		game_over_texture.load_text(renderer, game_over_font, game_over_text.str().c_str(), color);
