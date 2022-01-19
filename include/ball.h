@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#include "audio.h"
 #include "bricks.h"
 #include "circle.h"
 #include "paddle.h"
@@ -19,7 +20,7 @@ public:
 
 	Circle& get_collider();
 
-	void update(SDL_Renderer* renderer, Score& score, Walls& walls, Bricks& bricks, Paddle& paddle);
+	void update(SDL_Renderer* renderer, Audio& audio, Score& score, Walls& walls, Bricks& bricks, Paddle& paddle);
 
 	void render(SDL_Renderer* renderer, double elapsed_time);
 
