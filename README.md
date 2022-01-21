@@ -6,12 +6,15 @@ C++ clone of Atari's arcade game Breakout (1976).
 
 ## Installation
 
-You will need the following development libraries:
-- [SDL2](https://www.libsdl.org/)
-- [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
-- [SDL2_ttf](https://libsdl.org/projects/SDL_ttf/)
+Add the following development libraries to your PATH environment variable, replacing `\path\to` as necessary:
 
-For setting up the development libraries and running the project, please see this [Lazy Foo' tutorial](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/index.php).
+```
+C:\path\to\breakout\external\SDL2-2.0.18\lib\x64
+C:\path\to\breakout\external\SDL2_mixer-2.0.4\lib\x64
+C:\path\to\breakout\external\SDL2_ttf-2.0.15\lib\x64
+```
+
+Open **breakout.sln** in Visual Studio.
 
 ## License
 
