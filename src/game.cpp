@@ -9,7 +9,7 @@ Game::Game()
 		frame_total = 0;
 		update_total = 0;
 
-		debug_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 8);
+		debug_font = TTF_OpenFont("data/fonts/PressStart2P-Regular.ttf", 8);
 		if (debug_font == NULL)
 		{
 			printf("Failed to load debug font! SDL_ttf Error: %s\n", TTF_GetError());
@@ -35,7 +35,7 @@ Game::Game()
 		throw;
 	}
 
-	game_over_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 16);
+	game_over_font = TTF_OpenFont("data/fonts/PressStart2P-Regular.ttf", 16);
 	if (game_over_font == NULL)
 	{
 		printf("Failed to load game over font! SDL_ttf Error: %s\n", TTF_GetError());

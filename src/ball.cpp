@@ -11,7 +11,7 @@ Ball::Ball()
 
     collider = { position.x, position.y, RADIUS };
 
-    reset_font = TTF_OpenFont("assets/fonts/PressStart2P-Regular.ttf", 32);
+    reset_font = TTF_OpenFont("data/fonts/PressStart2P-Regular.ttf", 32);
     if (reset_font == NULL)
     {
         printf("Failed to load reset font! SDL_ttf Error: %s\n", TTF_GetError());
